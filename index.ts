@@ -1,3 +1,4 @@
+let isHopping: boolean;
 let time: number;
 let score: number;
 let level: number;
@@ -20,6 +21,7 @@ function jetBird(): void {
     time = 0;
     level = 0;
     score = 0;
+    isHopping = true;
     timeIntervalReturn = timeCounter();
     pipeIntervalReturn = movePipe(0);
     gravityIntervalReturn = gravity();
@@ -27,12 +29,31 @@ function jetBird(): void {
     (<HTMLElement>document.getElementsByClassName('menuLogo')[0]).style.display = 'none';
     (<HTMLElement>document.getElementsByClassName('menuContainer')[0]).style.display = 'none';
     (<HTMLElement>document.getElementsByClassName('message')[0]).style.display = 'none';
+    setTimeout(() => {
+        window.onclick = () => {
+            clearInterval(gravityIntervalReturn);
+            hoop();
+        }
+    }, 0)
     window.onkeydown = () => {
         clearInterval(gravityIntervalReturn);
         changeBirdYPosition();
     }
     window.onkeyup = () => {
         gravityIntervalReturn = gravity();
+    }
+}
+function hoop() {
+    if (isHopping) {
+        let returnInterval = setInterval(() => {
+            changeBirdYPosition();
+            isHopping = false;
+        }, 20)
+        setTimeout(() => {
+            clearInterval(returnInterval);
+            gravityIntervalReturn = gravity();
+            isHopping = true;
+        }, 200);
     }
 }
 function gameOver(): void {
@@ -51,9 +72,10 @@ function levelHandler(pipeNum: number) {
     changeGapPosition(pipeNum);
 }
 function validate(): boolean {
-    return (birdYPosition < randomGapPosition - 3 || birdYPosition > randomGapPosition + 15) ? false : true;
+    return (birdYPosition < randomGapPosition - 3 || birdYPosition > randomGapPosition + 25) ? false : true;
 }
 function killGame(): void {
+    window.onclick = () => { };
     window.onkeydown = () => { };
     window.onkeyup = () => { };
     clearInterval(backgroundIntervalReturn);
@@ -88,19 +110,19 @@ function movePipe(pipeNum: number): number {
             }
         }
         (<HTMLElement>document.getElementsByClassName('pipe')[pipeNum]).style.right = `${pipeDistance++}%`;
-    }, 100)
+    }, 50)
 }
 function moveBg(): number {
     return setInterval(() => {
         backgroundXPosition -= backgroundXPosition == -200 ? -200 : 1;
         (<HTMLElement>document.getElementsByClassName('bg')[0]).style.left = `${backgroundXPosition}%`;
-    }, 100)
+    }, 50)
 }
 function changeGapPosition(pipeNum: number): void {
-    randomGapPosition = Math.floor(Math.random() * 80);
+    randomGapPosition = Math.floor(Math.random() * 70);
     (<HTMLElement>document.getElementsByClassName('pipe')[pipeNum].children[0]).style.height = `${randomGapPosition}%`;
-    (<HTMLElement>document.getElementsByClassName('pipe')[pipeNum].children[1]).style.height = `${20}%`;
-    (<HTMLElement>document.getElementsByClassName('pipe')[pipeNum].children[2]).style.height = `${80 - randomGapPosition}%`;
+    (<HTMLElement>document.getElementsByClassName('pipe')[pipeNum].children[1]).style.height = `${30}%`;
+    (<HTMLElement>document.getElementsByClassName('pipe')[pipeNum].children[2]).style.height = `${70 - randomGapPosition}%`;
     pipesCounter++;
 }
 function gravity(): number {

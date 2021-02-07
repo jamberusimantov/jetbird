@@ -1,3 +1,4 @@
+var isHopping;
 var time;
 var score;
 var level;
@@ -20,6 +21,7 @@ function jetBird() {
     time = 0;
     level = 0;
     score = 0;
+    isHopping = true;
     timeIntervalReturn = timeCounter();
     pipeIntervalReturn = movePipe(0);
     gravityIntervalReturn = gravity();
@@ -27,6 +29,12 @@ function jetBird() {
     document.getElementsByClassName('menuLogo')[0].style.display = 'none';
     document.getElementsByClassName('menuContainer')[0].style.display = 'none';
     document.getElementsByClassName('message')[0].style.display = 'none';
+    setTimeout(function () {
+        window.onclick = function () {
+            clearInterval(gravityIntervalReturn);
+            hoop();
+        };
+    }, 0);
     window.onkeydown = function () {
         clearInterval(gravityIntervalReturn);
         changeBirdYPosition();
@@ -34,6 +42,19 @@ function jetBird() {
     window.onkeyup = function () {
         gravityIntervalReturn = gravity();
     };
+}
+function hoop() {
+    if (isHopping) {
+        var returnInterval_1 = setInterval(function () {
+            changeBirdYPosition();
+            isHopping = false;
+        }, 20);
+        setTimeout(function () {
+            clearInterval(returnInterval_1);
+            gravityIntervalReturn = gravity();
+            isHopping = true;
+        }, 200);
+    }
 }
 function gameOver() {
     document.getElementsByClassName('message')[0].style.display = 'block';
@@ -51,9 +72,10 @@ function levelHandler(pipeNum) {
     changeGapPosition(pipeNum);
 }
 function validate() {
-    return (birdYPosition < randomGapPosition - 3 || birdYPosition > randomGapPosition + 15) ? false : true;
+    return (birdYPosition < randomGapPosition - 3 || birdYPosition > randomGapPosition + 25) ? false : true;
 }
 function killGame() {
+    window.onclick = function () { };
     window.onkeydown = function () { };
     window.onkeyup = function () { };
     clearInterval(backgroundIntervalReturn);
@@ -90,19 +112,19 @@ function movePipe(pipeNum) {
             }
         }
         document.getElementsByClassName('pipe')[pipeNum].style.right = pipeDistance++ + "%";
-    }, 100);
+    }, 50);
 }
 function moveBg() {
     return setInterval(function () {
         backgroundXPosition -= backgroundXPosition == -200 ? -200 : 1;
         document.getElementsByClassName('bg')[0].style.left = backgroundXPosition + "%";
-    }, 100);
+    }, 50);
 }
 function changeGapPosition(pipeNum) {
-    randomGapPosition = Math.floor(Math.random() * 80);
+    randomGapPosition = Math.floor(Math.random() * 70);
     document.getElementsByClassName('pipe')[pipeNum].children[0].style.height = randomGapPosition + "%";
-    document.getElementsByClassName('pipe')[pipeNum].children[1].style.height = 20 + "%";
-    document.getElementsByClassName('pipe')[pipeNum].children[2].style.height = 80 - randomGapPosition + "%";
+    document.getElementsByClassName('pipe')[pipeNum].children[1].style.height = 30 + "%";
+    document.getElementsByClassName('pipe')[pipeNum].children[2].style.height = 70 - randomGapPosition + "%";
     pipesCounter++;
 }
 function gravity() {
