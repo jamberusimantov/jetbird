@@ -1,4 +1,3 @@
-var isHopping;
 var time;
 var score;
 var level;
@@ -21,7 +20,6 @@ function jetBird() {
     time = 0;
     level = 0;
     score = 0;
-    isHopping = true;
     timeIntervalReturn = timeCounter();
     pipeIntervalReturn = movePipe(0);
     gravityIntervalReturn = gravity();
@@ -29,12 +27,13 @@ function jetBird() {
     document.getElementsByClassName('menuLogo')[0].style.display = 'none';
     document.getElementsByClassName('menuContainer')[0].style.display = 'none';
     document.getElementsByClassName('message')[0].style.display = 'none';
-    setTimeout(function () {
-        window.onclick = function () {
-            clearInterval(gravityIntervalReturn);
-            hoop();
-        };
-    }, 0);
+    window.ontouchstart = function () {
+        clearInterval(gravityIntervalReturn);
+        changeBirdYPosition();
+    };
+    window.ontouchend = function () {
+        gravityIntervalReturn = gravity();
+    };
     window.onkeydown = function () {
         clearInterval(gravityIntervalReturn);
         changeBirdYPosition();
@@ -42,19 +41,6 @@ function jetBird() {
     window.onkeyup = function () {
         gravityIntervalReturn = gravity();
     };
-}
-function hoop() {
-    if (isHopping) {
-        var returnInterval_1 = setInterval(function () {
-            changeBirdYPosition();
-            isHopping = false;
-        }, 20);
-        setTimeout(function () {
-            clearInterval(returnInterval_1);
-            gravityIntervalReturn = gravity();
-            isHopping = true;
-        }, 200);
-    }
 }
 function gameOver() {
     document.getElementsByClassName('message')[0].style.display = 'block';
@@ -85,8 +71,14 @@ function killGame() {
     gravityIntervalReturn = gravity();
     printToScreen('menuLevel', "" + level);
     printToScreen('menuScore', "" + score);
+    document.getElementsByClassName('pipe')[0].removeAttribute('style');
+    document.getElementsByClassName('pipe')[0].children[0].removeAttribute('style');
+    document.getElementsByClassName('pipe')[0].children[1].removeAttribute('style');
+    document.getElementsByClassName('pipe')[0].children[2].removeAttribute('style');
+    document.getElementsByClassName('bg')[0].removeAttribute('style');
     setTimeout(function () {
         clearInterval(gravityIntervalReturn);
+        document.getElementsByClassName('bird')[0].removeAttribute('style');
         document.getElementsByClassName('menuContainer')[0].style.display = 'flex';
     }, 5000);
 }
@@ -130,12 +122,13 @@ function changeGapPosition(pipeNum) {
 function gravity() {
     return setInterval(function () {
         if (birdYPosition <= 91) {
-            birdYPosition == 91 ? clearInterval(gravityIntervalReturn) : document.getElementsByClassName('bird')[0].style.top = birdYPosition++ + "%";
+            birdYPosition == 91 ? clearInterval(gravityIntervalReturn) : document.getElementsByClassName('bird')[0].style.top = ++birdYPosition + "%";
+            console.log('in gravity: ', birdYPosition);
         }
     }, 20);
 }
 function changeBirdYPosition() {
-    document.getElementsByClassName('bird')[0].style.top = birdYPosition > 0 ? birdYPosition-- + "%" : birdYPosition + "%";
+    document.getElementsByClassName('bird')[0].style.top = birdYPosition > 0 ? birdYPosition-- + "%" : '0' + "%";
 }
 function printToScreen(elementClass, text) {
     document.getElementsByClassName(elementClass)[0].innerHTML = text;
@@ -148,8 +141,8 @@ function nextLevel() {
     clearInterval(timeIntervalReturn);
     clearInterval(gravityIntervalReturn);
     document.getElementsByClassName('bird')[0].style.animation = 'finishLevel 1s 1 ease-in';
-    document.getElementsByClassName('menuLevel')[0].innerHTML = "" + level;
-    document.getElementsByClassName('menuScore')[0].innerHTML = "" + score;
+    printToScreen('menuLevel', "" + level);
+    printToScreen('menuScore', "" + score);
     setTimeout(function () {
         document.getElementsByClassName('menuContainer')[0].style.display = 'flex';
     }, 3000);

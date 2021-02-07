@@ -1,4 +1,3 @@
-let isHopping: boolean;
 let time: number;
 let score: number;
 let level: number;
@@ -21,7 +20,6 @@ function jetBird(): void {
     time = 0;
     level = 0;
     score = 0;
-    isHopping = true;
     timeIntervalReturn = timeCounter();
     pipeIntervalReturn = movePipe(0);
     gravityIntervalReturn = gravity();
@@ -29,31 +27,19 @@ function jetBird(): void {
     (<HTMLElement>document.getElementsByClassName('menuLogo')[0]).style.display = 'none';
     (<HTMLElement>document.getElementsByClassName('menuContainer')[0]).style.display = 'none';
     (<HTMLElement>document.getElementsByClassName('message')[0]).style.display = 'none';
-    setTimeout(() => {
-        window.onclick = () => {
-            clearInterval(gravityIntervalReturn);
-            hoop();
-        }
-    }, 0)
+    window.ontouchstart=()=>{
+        clearInterval(gravityIntervalReturn);
+        changeBirdYPosition();
+    }
+    window.ontouchend=()=>{
+        gravityIntervalReturn = gravity();
+    }
     window.onkeydown = () => {
         clearInterval(gravityIntervalReturn);
         changeBirdYPosition();
     }
     window.onkeyup = () => {
         gravityIntervalReturn = gravity();
-    }
-}
-function hoop() {
-    if (isHopping) {
-        let returnInterval = setInterval(() => {
-            changeBirdYPosition();
-            isHopping = false;
-        }, 20)
-        setTimeout(() => {
-            clearInterval(returnInterval);
-            gravityIntervalReturn = gravity();
-            isHopping = true;
-        }, 200);
     }
 }
 function gameOver(): void {
@@ -85,8 +71,14 @@ function killGame(): void {
     gravityIntervalReturn = gravity();
     printToScreen('menuLevel', `${level}`);
     printToScreen('menuScore', `${score}`);
+    (<HTMLElement>document.getElementsByClassName('pipe')[0]).removeAttribute('style');
+    (<HTMLElement>document.getElementsByClassName('pipe')[0]).children[0].removeAttribute('style');
+    (<HTMLElement>document.getElementsByClassName('pipe')[0]).children[1].removeAttribute('style');
+    (<HTMLElement>document.getElementsByClassName('pipe')[0]).children[2].removeAttribute('style');
+    (<HTMLElement>document.getElementsByClassName('bg')[0]).removeAttribute('style');
     setTimeout(() => {
         clearInterval(gravityIntervalReturn);
+        (<HTMLElement>document.getElementsByClassName('bird')[0]).removeAttribute('style');
         (<HTMLElement>document.getElementsByClassName('menuContainer')[0]).style.display = 'flex';
     }, 5000);
 }
@@ -128,12 +120,13 @@ function changeGapPosition(pipeNum: number): void {
 function gravity(): number {
     return setInterval(() => {
         if (birdYPosition <= 91) {
-            birdYPosition == 91 ? clearInterval(gravityIntervalReturn) : (<HTMLElement>document.getElementsByClassName('bird')[0]).style.top = `${birdYPosition++}%`;
+            birdYPosition == 91 ? clearInterval(gravityIntervalReturn) : (<HTMLElement>document.getElementsByClassName('bird')[0]).style.top = `${++birdYPosition}%`;
+            console.log('in gravity: ',birdYPosition);
         }
     }, 20)
 }
 function changeBirdYPosition(): void {
-    (<HTMLElement>document.getElementsByClassName('bird')[0]).style.top = birdYPosition > 0 ? `${birdYPosition--}%` : `${birdYPosition}%`;
+    (<HTMLElement>document.getElementsByClassName('bird')[0]).style.top = birdYPosition > 0 ? `${birdYPosition--}%` : `${'0'}%`;    
 }
 function printToScreen(elementClass: string, text: string): void {
     document.getElementsByClassName(elementClass)[0].innerHTML = text;
@@ -146,8 +139,8 @@ function nextLevel(): void {
     clearInterval(timeIntervalReturn);
     clearInterval(gravityIntervalReturn);
     (<HTMLElement>document.getElementsByClassName('bird')[0]).style.animation = 'finishLevel 1s 1 ease-in';
-    document.getElementsByClassName('menuLevel')[0].innerHTML = `${level}`;
-    document.getElementsByClassName('menuScore')[0].innerHTML = `${score}`;
+    printToScreen('menuLevel',`${level}`);
+    printToScreen('menuScore',`${score}`);
     setTimeout(() => {
         (<HTMLElement>document.getElementsByClassName('menuContainer')[0]).style.display = 'flex';
     }, 3000);
