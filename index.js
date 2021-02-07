@@ -11,6 +11,7 @@ var pipeIntervalReturn;
 var gravityIntervalReturn;
 var backgroundIntervalReturn;
 var timeIntervalReturn;
+var touchAscendIntervalReturn;
 function jetBird() {
     pipeDistance = -30;
     backgroundXPosition = 0;
@@ -29,9 +30,10 @@ function jetBird() {
     document.getElementsByClassName('message')[0].style.display = 'none';
     window.ontouchstart = function () {
         clearInterval(gravityIntervalReturn);
-        changeBirdYPosition();
+        touchAscendIntervalReturn = touchChangeYPosition();
     };
     window.ontouchend = function () {
+        clearInterval(touchAscendIntervalReturn);
         gravityIntervalReturn = gravity();
     };
     window.onkeydown = function () {
@@ -61,7 +63,8 @@ function validate() {
     return (birdYPosition < randomGapPosition - 3 || birdYPosition > randomGapPosition + 25) ? false : true;
 }
 function killGame() {
-    window.onclick = function () { };
+    window.ontouchstart = function () { };
+    window.ontouchend = function () { };
     window.onkeydown = function () { };
     window.onkeyup = function () { };
     clearInterval(backgroundIntervalReturn);
@@ -129,6 +132,11 @@ function gravity() {
 }
 function changeBirdYPosition() {
     document.getElementsByClassName('bird')[0].style.top = birdYPosition > 0 ? birdYPosition-- + "%" : '0' + "%";
+}
+function touchChangeYPosition() {
+    return setInterval(function () {
+        changeBirdYPosition();
+    }, 20);
 }
 function printToScreen(elementClass, text) {
     document.getElementsByClassName(elementClass)[0].innerHTML = text;

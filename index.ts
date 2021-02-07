@@ -11,6 +11,7 @@ let pipeIntervalReturn: number;
 let gravityIntervalReturn: number;
 let backgroundIntervalReturn: number;
 let timeIntervalReturn: number;
+let touchAscendIntervalReturn:number;
 function jetBird(): void {
     pipeDistance = -30;
     backgroundXPosition = 0;
@@ -29,9 +30,10 @@ function jetBird(): void {
     (<HTMLElement>document.getElementsByClassName('message')[0]).style.display = 'none';
     window.ontouchstart=()=>{
         clearInterval(gravityIntervalReturn);
-        changeBirdYPosition();
+        touchAscendIntervalReturn = touchChangeYPosition();
     }
     window.ontouchend=()=>{
+        clearInterval(touchAscendIntervalReturn);
         gravityIntervalReturn = gravity();
     }
     window.onkeydown = () => {
@@ -61,7 +63,8 @@ function validate(): boolean {
     return (birdYPosition < randomGapPosition - 3 || birdYPosition > randomGapPosition + 25) ? false : true;
 }
 function killGame(): void {
-    window.onclick = () => { };
+    window.ontouchstart = () => { };
+    window.ontouchend = () => { };
     window.onkeydown = () => { };
     window.onkeyup = () => { };
     clearInterval(backgroundIntervalReturn);
@@ -127,6 +130,11 @@ function gravity(): number {
 }
 function changeBirdYPosition(): void {
     (<HTMLElement>document.getElementsByClassName('bird')[0]).style.top = birdYPosition > 0 ? `${birdYPosition--}%` : `${'0'}%`;    
+}
+function touchChangeYPosition():number {
+    return setInterval(() => {
+        changeBirdYPosition();
+    }, 20)
 }
 function printToScreen(elementClass: string, text: string): void {
     document.getElementsByClassName(elementClass)[0].innerHTML = text;
