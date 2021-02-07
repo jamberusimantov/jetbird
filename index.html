@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name='author' content='siman tov jamberu'>
+    <meta name='description' content='best site ever'>
+    <link rel="stylesheet" href="style.css">
+    <title>jetBird</title>
+</head>
+
+<body id='root'>
+    <div class='jetBird'>
+        <div class='menu'>
+            <div class='message'></div>
+            <div class='menuContainer'>
+                <div class='menuLogo'></div>
+                <div class='levelAndScore'>
+                    <div class='menuListItem'>
+                        <div class='LevelGif'></div>
+                        <span class='menuLevel'></span>
+                    </div>
+                    <div class='menuListItem'>
+                        <div class='coin'></div>
+                        <span class='menuScore'></span>
+                    </div>
+                </div>
+                <div class='newGame Btn' onclick='jetBird()'></div>
+                <div class='scores Btn'></div>
+                <div class='rate Btn'></div>
+            </div>
+        </div>
+        <div class='gameContainer'>
+            <div class='board'>
+                <div class='boardLevel'>
+                    <div class='LevelGif'></div>
+                    <span class='level'></span>
+                </div>
+                <div class='boardTime'>
+                    <div class='hourGlass'></div>
+                    <span class='time'></span>
+                </div>
+                <div class='boardScore'>
+                    <div class='coin'></div>
+                    <span class='score'></span>
+                </div>
+            </div>
+            <img src='./assets/mainbg.jpg' alt='app background img' class='bg'>
+            <div class='bird'></div>
+            <div class='pipe'>
+                <div class='upperPipe'></div>
+                <div class='pipeGap'></div>
+                <div class='lowerPipe'></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+
+</html>
